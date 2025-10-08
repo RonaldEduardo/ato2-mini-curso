@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minicurso Interativo: Git & GitHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Dark Space Theme -->
+    <!-- Application Structure Plan: A single-page application with a fixed sidebar for thematic navigation, allowing users to jump between concepts. The structure prioritizes exploration over linear presentation. Key sections include an introduction, interactive diagrams for core theories (3 Areas, Branching), and a practical command reference, designed to turn passive learning into active engagement. -->
+    <!-- Visualization & Content Choices: Report Info -> Goal -> Viz/Presentation Method -> Interaction -> Justification. 1. 3 Areas -> Explain Flow -> Interactive HTML/JS Diagram -> Buttons move a 'file' div between areas -> Makes the abstract staging area concept tangible. 2. Branching -> Explain timelines -> Chart.js Scatter Plot -> Buttons create/merge branches on the canvas -> Visually demonstrates the power of non-linear development. 3. Practical Commands -> Quick Reference -> Tabbed code blocks with copy buttons -> Improves usability for students during practice. 4. Cheat Sheet -> Fast Lookup -> Searchable list -> Provides long-term value as a quick reference tool. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Space Mono', monospace;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .sidebar-link.active {
+            background-color: #FBBF24;
+            color: #1E293B;
+        }
+        .code-block {
+            position: relative;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: #4B5563;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .code-block:hover .copy-btn {
+            opacity: 1;
+        }
+        .photo-flow-area {
+            transition: all 0.5s ease-in-out;
+        }
+        .file-representation {
+            transition: all 0.5s ease-in-out;
+            transform-origin: center;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="bg-gray-800 w-64 p-6 space-y-4 fixed top-0 left-0 h-full transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-20">
+            <h1 class="text-2xl font-bold text-amber-400">Git & GitHub</h1>
+            <p class="text-sm text-gray-400">Dominando a Máquina do Tempo</p>
+            <nav class="space-y-2 pt-4">
+                <a href="#intro" class="sidebar-link block p-2 rounded hover:bg-amber-400 hover:text-gray-900 transition-colors">🚀 Introdução</a>
+                <div>
+                    <h3 class="text-gray-500 text-sm font-bold uppercase tracking-wider mt-4 mb-2">A Teoria</h3>
+                    <a href="#pilares" class="sidebar-link block p-2 rounded hover:bg-amber-400 hover:text-gray-900 transition-colors">🏛️ Os 3 Pilares</a>
+                    <a href="#fotografo" class="sidebar-link block p-2 rounded hover:bg-amber-400 hover:text-gray-900 transition-colors">📸 Fluxo do Fotógrafo</a>
+                    <a href="#viagem" class="sidebar-link block p-2 rounded hover:bg-amber-400 hover:text-gray-900 transition-colors">⏳ Viagem no Tempo</a>
+                </div>
+                 <div>
+                    <h3 class="text-gray-500 text-sm font-bold uppercase tracking-wider mt-4 mb-2">A Prática</h3>
+                    <a href="#pratica" class="sidebar-link block p-2 rounded hover:bg-amber-400 hover:text-gray-900 transition-colors">💻 Comandos Práticos</a>
+                    <a href="#guia" class="sidebar-link block p-2 rounded hover:bg-amber-400 hover:text-gray-900 transition-colors">📚 Guia de Comandos</a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Mobile Menu Button -->
+        <button id="menu-btn" class="md:hidden fixed top-4 left-4 z-30 p-2 bg-amber-400 text-gray-900 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        </button>
+
+        <!-- Main Content -->
+        <main class="flex-1 md:ml-64 p-6 md:p-10">
+            <div id="intro" class="content-section">
+                <h2 class="text-4xl font-bold text-amber-400 mb-4">O "Porquê" do Controle de Versão</h2>
+                <p class="text-gray-400 mb-6">Esta seção explora o problema fundamental que o Git veio resolver. Antes de mergulhar nos comandos, é crucial entender a "dor" do versionamento manual para apreciar verdadeiramente o poder e a elegância da solução que o Git oferece.</p>
+                <div class="bg-gray-800 p-6 rounded-lg">
+                    <h3 class="text-2xl font-bold mb-4">O Caos Organizado (Ou "Quem Nunca?")</h3>
+                    <p class="mb-4">Todo desenvolvedor, em algum momento, já se viu numa pasta assim:</p>
+                    <div class="bg-gray-900 p-4 rounded text-sm text-yellow-300 font-mono">
+                        <p>📁 Projeto/</p>
+                        <p class="ml-4">📄 TCC_final.docx</p>
+                        <p class="ml-4">📄 TCC_final_revisado.docx</p>
+                        <p class="ml-4">📄 TCC_final_AGORA_VAI.docx</p>
+                        <p class="ml-4">📄 TCC_final_agora_vai_mesmo_v2_FINAL.docx</p>
+                    </div>
+                    <p class="mt-4">Esse método manual leva ao medo de alterar código, à perda de trabalho e à enorme dificuldade de colaborar. O controle de versão não é um luxo, é uma necessidade para um desenvolvimento são e profissional.</p>
+                     <h3 class="text-2xl font-bold mt-8 mb-4">A Lenda: Linus Torvalds</h3>
+                    <p>Em 2005, Linus Torvalds, criador do Kernel do Linux, enfrentava um problema massivo: gerenciar as contribuições de milhares de desenvolvedores. Nenhuma ferramenta existente era boa o suficiente. Então, em duas semanas, ele criou a primeira versão do Git, baseando-a em três pilares essenciais.</p>
+                </div>
+            </div>
+
+            <div id="pilares" class="content-section">
+                <h2 class="text-4xl font-bold text-amber-400 mb-4">Os 3 Pilares do Git</h2>
+                <p class="text-gray-400 mb-6">O Git não foi criado por acaso. Ele foi projetado sobre três princípios fundamentais que o tornam a ferramenta de controle de versão mais poderosa e popular do mundo. Entender esses pilares é entender a filosofia do Git.</p>
+                 <div class="grid md:grid-cols-3 gap-6">
+                    <div class="bg-gray-800 p-6 rounded-lg">
+                        <h3 class="text-xl font-bold text-amber-400 mb-2">🚀 Rápido</h3>
+                        <p>Operações como criar branches ou comparar versões são quase instantâneas. Isso acontece porque o Git trabalha com "snapshots" (fotos completas do projeto) e não apenas com as diferenças entre arquivos, tornando a navegação no histórico extremamente eficiente.</p>
+                    </div>
+                     <div class="bg-gray-800 p-6 rounded-lg">
+                        <h3 class="text-xl font-bold text-amber-400 mb-2">🌐 Distribuído</h3>
+                        <p>Diferente de sistemas centralizados, cada desenvolvedor tem uma cópia completa do histórico do projeto na sua máquina. Isso permite trabalhar offline com total capacidade e torna a colaboração mais flexível e segura, pois não há um ponto único de falha.</p>
+                    </div>
+                     <div class="bg-gray-800 p-6 rounded-lg">
+                        <h3 class="text-xl font-bold text-amber-400 mb-2">🛡️ Seguro</h3>
+                        <p>A integridade do código é garantida. Tudo no Git é "checksummed" usando um hash SHA-1. É matematicamente impossível alterar o conteúdo de um arquivo ou commit sem que o Git perceba. Cada parte do seu histórico tem uma impressão digital única e inviolável.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="fotografo" class="content-section">
+                <h2 class="text-4xl font-bold text-amber-400 mb-4">📸 O Fluxo do Fotógrafo</h2>
+                <p class="text-gray-400 mb-6">Esta simulação interativa demonstra o conceito mais crucial do Git: o fluxo de trabalho em três áreas. Pense como um fotógrafo: você trabalha no seu estúdio, compõe a cena no visor da câmera e, finalmente, guarda a foto no seu álbum. Clique nos botões para mover o "arquivo" através do fluxo.</p>
+                <div class="bg-gray-800 p-6 rounded-lg">
+                    <div id="photo-flow-controls" class="flex items-center justify-center space-x-4 mb-6">
+                        <button id="add-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition-colors">git add</button>
+                        <button id="commit-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition-colors" disabled>git commit</button>
+                        <button id="reset-btn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition-colors">Reset</button>
+                    </div>
+                    <div class="grid grid-cols-3 gap-4 text-center">
+                        <div id="working-dir-area" class="photo-flow-area bg-gray-700 p-4 rounded-lg min-h-[200px] border-2 border-dashed border-gray-600">
+                            <h3 class="font-bold mb-2">1. O Estúdio (Working Directory)</h3>
+                            <div id="file-representation" class="file-representation w-16 h-10 bg-amber-400 rounded mx-auto mt-8 flex items-center justify-center text-gray-900 font-bold">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                            </div>
+                        </div>
+                        <div id="staging-area" class="photo-flow-area bg-gray-700 p-4 rounded-lg min-h-[200px] border-2 border-dashed border-gray-600">
+                             <h3 class="font-bold mb-2">2. O Visor da Câmera (Staging Area)</h3>
+                        </div>
+                         <div id="repo-area" class="photo-flow-area bg-gray-700 p-4 rounded-lg min-h-[200px] border-2 border-dashed border-gray-600">
+                             <h3 class="font-bold mb-2">3. O Álbum (Repository)</h3>
+                             <div id="commits-log" class="space-y-2 mt-4"></div>
+                        </div>
+                    </div>
+                    <p id="photo-flow-status" class="text-center mt-4 text-amber-300 h-6">O arquivo está no seu estúdio. Faça alterações!</p>
+                </div>
+            </div>
+
+            <div id="viagem" class="content-section">
+                <h2 class="text-4xl font-bold text-amber-400 mb-4">⏳ Viagem no Tempo com Branches</h2>
+                <p class="text-gray-400 mb-6">Branches são a ferramenta mais poderosa do Git para organização e trabalho em equipe. Pense nelas como "linhas do tempo alternativas". Esta simulação visualiza como as branches divergem para desenvolver funcionalidades e depois se fundem de volta à linha principal.</p>
+                <div class="bg-gray-800 p-6 rounded-lg">
+                    <div class="chart-container relative mx-auto" style="height: 400px; max-width: 800px;">
+                        <canvas id="branching-chart"></canvas>
+                    </div>
+                    <div class="flex flex-wrap items-center justify-center gap-4 mt-6">
+                        <button id="branch-commit-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition-colors">git commit</button>
+                        <input id="branch-name-input" type="text" placeholder="nome-da-feature" class="bg-gray-700 text-white p-2 rounded">
+                        <button id="branch-create-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition-colors">git checkout -b</button>
+                        <button id="branch-merge-btn" class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded transition-colors">git merge</button>
+                        <button id="branch-reset-btn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition-colors">Reset</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="pratica" class="content-section">
+                 <h2 class="text-4xl font-bold text-amber-400 mb-4">💻 Comandos Práticos</h2>
+                 <p class="text-gray-400 mb-6">Aqui estão os comandos essenciais divididos por módulo, como visto na parte prática do curso. Use os botões para copiar os comandos e praticar no seu próprio terminal.</p>
+                <div class="bg-gray-800 rounded-lg p-6">
+                    <h3 class="text-2xl font-bold mb-4">Módulo 4: A Primeira Viagem no Tempo</h3>
+                    <div class="code-block bg-gray-900 rounded p-4 font-mono text-sm mb-4">
+                        <pre><code># Configurar sua identidade (só uma vez)
+git config --global user.name "Seu Nome"
+git config --global user.email "seu@email.com"
+
+# Iniciar um repositório
+git init
+
+# Checar o status
+git status
+
+# Adicionar um arquivo à Staging Area
+git add README.md
+
+# Fazer um commit
+git commit -m "feat: Adiciona README inicial"
+
+# Ver o histórico
+git log</code></pre>
+                        <button class="copy-btn">Copiar</button>
+                    </div>
+                    
+                    <h3 class="text-2xl font-bold mb-4 mt-8">Módulo 5: Criando Universos Paralelos</h3>
+                    <div class="code-block bg-gray-900 rounded p-4 font-mono text-sm mb-4">
+                        <pre><code># Criar uma branch e mudar para ela
+git checkout -b feature/nova-funcionalidade
+
+# Mudar para uma branch existente
+git checkout main
+
+# Fundir uma branch na sua branch atual
+git merge feature/nova-funcionalidade
+
+# Apagar uma branch que já foi fundida
+git branch -d feature/nova-funcionalidade</code></pre>
+                         <button class="copy-btn">Copiar</button>
+                    </div>
+
+                    <h3 class="text-2xl font-bold mb-4 mt-8">Módulo 7: A Missão em Equipa</h3>
+                     <div class="code-block bg-gray-900 rounded p-4 font-mono text-sm">
+                        <pre><code># Clonar um repositório (após o Fork)
+git clone URL_DO_SEU_FORK
+
+# Enviar seus commits para o seu repositório remoto
+git push origin nome-da-sua-branch
+
+# Atualizar seu repositório local com as novidades do remoto
+git pull origin main</code></pre>
+                        <button class="copy-btn">Copiar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="guia" class="content-section">
+                <h2 class="text-4xl font-bold text-amber-400 mb-4">📚 Guia Rápido de Comandos</h2>
+                <p class="text-gray-400 mb-6">Um guia de consulta rápida para os comandos mais importantes. Use a barra de pesquisa para filtrar e encontrar o comando que você precisa.</p>
+                <input type="text" id="command-search" placeholder="Pesquisar comando..." class="w-full bg-gray-700 p-3 rounded mb-6 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                <div id="command-list" class="space-y-4">
+                    <!-- Comandos serão inseridos aqui pelo JS -->
+                </div>
+            </div>
+
+        </main>
+    </div>
+</body>
+<script src="index.js"></script>
+</html>
