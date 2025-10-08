@@ -1,4 +1,304 @@
-<h1>PRIMEIRA PARTE: "Qualquer tolo consegue escrever código que um computador entende."</h1>
-<h1>PISTA: A última parte não está no futuro desta linha do tempo, mas num futuro que nunca chegou a acontecer.</h1>
-<h1>TERCEIRA PARTE: "...que humanos entendem."
-- Martin Fowler</h1>
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construtor de Perfil Profissional do GitHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals (Stone & Amber) -->
+    <!-- Application Structure Plan: The application is designed as an interactive, step-by-step README builder. A two-column layout separates the controls/instructions (left) from the live outputs (right: generated code and a visual preview). This task-oriented structure was chosen over a simple text display to transform passive learning into active creation. Users can click to add sections, fill in their details, and immediately see the result, which is a more effective and engaging way to teach the content from the source guide. -->
+    <!-- Visualization & Content Choices: Report Info: Step-by-step guide for creating a GitHub profile README. -> Goal: Inform & Enable Action. -> Viz/Presentation Method: An interactive builder UI with buttons for each README section (Header, Bio, Tech Stack, Stats). -> Interaction: Users click buttons to add sections, input their data (username, links), and select technologies from a grid. This dynamically generates Markdown code and updates a live preview pane. -> Justification: This interactive approach is superior to static text because it allows users to build their own README file as they learn, reinforcing the concepts through immediate practical application. -> Library/Method: Vanilla JS for all interactions, Tailwind CSS for layout. No charts needed. Confirmed NO SVG/Mermaid. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f5f4; /* stone-100 */
+            color: #1c1917; /* stone-900 */
+        }
+        h1, h2, h3, h4 {
+            font-family: 'Space Mono', monospace;
+        }
+        .btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .btn-primary {
+            background-color: #0d9488; /* teal-600 */
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #0f766e; /* teal-700 */
+        }
+        .btn-secondary {
+            background-color: #e5e5e5; /* neutral-200 */
+            color: #262626; /* neutral-800 */
+        }
+        .btn-secondary:hover {
+            background-color: #d4d4d4; /* neutral-300 */
+        }
+        .code-output {
+            background-color: #292524; /* stone-800 */
+            color: #f5f5f4;
+            font-family: 'Space Mono', monospace;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .preview-pane {
+            background-color: white;
+            border: 1px solid #e7e5e4; /* stone-200 */
+            box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+        }
+        .tech-icon {
+            cursor: pointer;
+            opacity: 0.5;
+            transition: all 0.2s;
+            filter: grayscale(80%);
+        }
+        .tech-icon.selected {
+            opacity: 1;
+            filter: grayscale(0%);
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto px-4 py-8 md:py-12">
+        
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-teal-700 mb-4">Construtor de Perfil do GitHub</h1>
+            <p class="text-lg text-stone-600 max-w-3xl mx-auto">Transforme seu perfil numa vitrine profissional. Siga os passos, adicione os seus detalhes e gere o código Markdown para o seu README personalizado.</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+            
+            <!-- Coluna de Controles e Instruções -->
+            <div class="space-y-8">
+                <div>
+                    <h3 class="text-2xl font-bold mb-4">Passo 1: Crie o Repositório Especial</h3>
+                    <div class="bg-white p-6 rounded-lg shadow-md border border-stone-200 text-stone-700 space-y-2">
+                        <p>No GitHub, crie um novo repositório **público**.</p>
+                        <p>O nome do repositório deve ser <strong class="text-teal-600">exatamente igual ao seu nome de usuário</strong>.</p>
+                        <p>Marque a opção para adicionar um ficheiro <strong>README.md</strong>.</p>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-2xl font-bold mb-4">Passo 2: Construa o seu README</h3>
+                    <p class="text-stone-600 mb-4">Selecione os componentes que deseja adicionar. Preencha os seus dados e veja a magia acontecer ao lado!</p>
+                    <div id="controls" class="space-y-4">
+                        <!-- Seção de Cabeçalho -->
+                        <details id="header-details" class="bg-white p-4 rounded-lg shadow-md border border-stone-200">
+                            <summary class="font-semibold text-lg cursor-pointer">🖼️ Adicionar Cabeçalho (Header)</summary>
+                            <div class="mt-4 space-y-2">
+                                <label for="header-url" class="block text-sm font-medium text-stone-700">URL da Imagem ou GIF:</label>
+                                <input type="text" id="header-url" placeholder="https://..." class="w-full p-2 border border-stone-300 rounded-md">
+                                <button onclick="addComponent('header')" class="btn btn-secondary w-full py-2 rounded-md mt-2">Adicionar/Atualizar Cabeçalho</button>
+                            </div>
+                        </details>
+
+                        <!-- Seção de Bio -->
+                        <details id="bio-details" class="bg-white p-4 rounded-lg shadow-md border border-stone-200">
+                            <summary class="font-semibold text-lg cursor-pointer">👋 Adicionar Introdução e Bio</summary>
+                             <div class="mt-4 space-y-2">
+                                <label for="bio-content" class="block text-sm font-medium text-stone-700">Texto de Introdução (use Markdown):</label>
+                                <textarea id="bio-content" rows="6" class="w-full p-2 border border-stone-300 rounded-md font-mono text-sm"># Olá, eu sou [Seu Nome] 👋
+
+- 🔭 Atualmente estou a trabalhar em...
+- 🌱 Estou a aprender sobre...</textarea>
+                                <button onclick="addComponent('bio')" class="btn btn-secondary w-full py-2 rounded-md mt-2">Adicionar/Atualizar Bio</button>
+                            </div>
+                        </details>
+
+                        <!-- Seção de Tech Stack -->
+                        <details id="tech-details" class="bg-white p-4 rounded-lg shadow-md border border-stone-200">
+                            <summary class="font-semibold text-lg cursor-pointer">🛠️ Adicionar Tecnologias (Tech Stack)</summary>
+                            <div class="mt-4">
+                                <p class="mb-4 text-stone-700">Selecione as tecnologias que você usa:</p>
+                                <div id="tech-icons-grid" class="grid grid-cols-5 sm:grid-cols-6 md:grid-cols-8 gap-4">
+                                    <!-- Ícones serão inseridos aqui pelo JS -->
+                                </div>
+                                 <button onclick="addComponent('tech')" class="btn btn-secondary w-full py-2 rounded-md mt-4">Adicionar/Atualizar Tecnologias</button>
+                            </div>
+                        </details>
+
+                        <!-- Seção de Stats -->
+                        <details id="stats-details" class="bg-white p-4 rounded-lg shadow-md border border-stone-200">
+                            <summary class="font-semibold text-lg cursor-pointer">📊 Adicionar Estatísticas do GitHub</summary>
+                            <div class="mt-4 space-y-2">
+                                <label for="github-username" class="block text-sm font-medium text-stone-700">Seu nome de usuário no GitHub:</label>
+                                <input type="text" id="github-username" placeholder="ex: octocat" class="w-full p-2 border border-stone-300 rounded-md">
+                                <button onclick="addComponent('stats')" class="btn btn-secondary w-full py-2 rounded-md mt-2">Adicionar/Atualizar Estatísticas</button>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coluna de Saída e Pré-visualização -->
+            <div class="sticky top-8 space-y-8">
+                <div>
+                    <h3 class="text-2xl font-bold mb-4">Código Markdown Gerado</h3>
+                    <div class="relative">
+                        <textarea id="markdown-output" readonly class="code-output w-full h-64 p-4 rounded-lg resize-none border-2 border-stone-700"></textarea>
+                        <button onclick="copyMarkdown()" class="absolute top-2 right-2 btn btn-secondary px-3 py-1 text-sm rounded-md">Copiar</button>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold mb-4">Pré-visualização</h3>
+                    <div id="preview-output" class="preview-pane w-full h-auto min-h-[20rem] p-6 rounded-lg overflow-y-auto prose">
+                         <p class="text-stone-400 text-center pt-16">A pré-visualização do seu README aparecerá aqui...</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+<script>
+    const state = {
+        header: { added: false, url: '' },
+        bio: { added: false, content: '' },
+        tech: { added: false, selected: [] },
+        stats: { added: false, username: '' },
+    };
+
+    const techOptions = [
+        { id: 'javascript', name: 'JavaScript', url: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg' },
+        { id: 'typescript', name: 'TypeScript', url: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/typescript/typescript-original.svg' },
+        { id: 'react', name: 'React', url: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original.svg' },
+        { id: 'vuejs', name: 'Vue.js', url: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/vuejs/vuejs-original.svg' },
+        { id: 'angularjs', name: 'Angular', url: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/angularjs/angularjs-original.svg' },
+        { id: 'nodejs', name: 'Node.js', url: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/nodejs/nodejs-original.svg' },
+        { id: 'python', name: 'Python', url: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg' },
+        { id: 'java', name: 'Java', url: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/java/java-original.svg' },
+        { id: 'csharp', name: 'C#', url: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/csharp/csharp-original.svg' },
+        { id: 'go', name: 'Go', url: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/go/go-original.svg' },
+        { id: 'php', name: 'PHP', url: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/php/php-original.svg' },
+        { id: 'docker', name: 'Docker', url: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/docker/docker-original.svg' },
+        { id: 'git', name: 'Git', url: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/git/git-original.svg' },
+        { id: 'html5', name: 'HTML5', url: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/html5/html5-original.svg' },
+        { id: 'css3', name: 'CSS3', url: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/css3/css3-original.svg' },
+        { id: 'tailwindcss', name: 'TailwindCSS', url: 'https://raw.githubusercontent.com/devicons/devicon/master/icons/tailwindcss/tailwindcss-plain.svg' },
+    ];
+    
+    function initializeTechIcons() {
+        const grid = document.getElementById('tech-icons-grid');
+        techOptions.forEach(tech => {
+            const img = document.createElement('img');
+            img.src = tech.url;
+            img.alt = tech.name;
+            img.title = tech.name;
+            img.classList.add('tech-icon', 'w-10', 'h-10');
+            img.dataset.techId = tech.id;
+            img.onclick = () => toggleTechIcon(tech.id);
+            grid.appendChild(img);
+        });
+    }
+
+    function toggleTechIcon(techId) {
+        const iconElement = document.querySelector(`.tech-icon[data-tech-id="${techId}"]`);
+        const index = state.tech.selected.indexOf(techId);
+
+        if (index > -1) {
+            state.tech.selected.splice(index, 1);
+            iconElement.classList.remove('selected');
+        } else {
+            state.tech.selected.push(techId);
+            iconElement.classList.add('selected');
+        }
+    }
+    
+    function addComponent(type) {
+        switch(type) {
+            case 'header':
+                state.header.added = true;
+                state.header.url = document.getElementById('header-url').value;
+                break;
+            case 'bio':
+                state.bio.added = true;
+                state.bio.content = document.getElementById('bio-content').value;
+                break;
+            case 'tech':
+                state.tech.added = true;
+                // state is already updated by toggleTechIcon
+                break;
+            case 'stats':
+                state.stats.added = true;
+                state.stats.username = document.getElementById('github-username').value;
+                break;
+        }
+        updateOutputs();
+    }
+
+    function generateMarkdown() {
+        let markdown = '';
+        if (state.header.added && state.header.url) {
+            markdown += `<p align="center">\n  <img src="${state.header.url}" alt="Meu Banner" width="600"/>\n</p>\n\n`;
+        }
+        if (state.bio.added && state.bio.content) {
+            markdown += `${state.bio.content}\n\n`;
+        }
+        if (state.tech.added && state.tech.selected.length > 0) {
+            markdown += `<h3 align="left">Linguagens e Ferramentas:</h3>\n<p align="left">\n`;
+            state.tech.selected.forEach(techId => {
+                const tech = techOptions.find(t => t.id === techId);
+                markdown += `  <a href="#" target="_blank" rel="noreferrer">\n    <img src="${tech.url}" alt="${tech.name}" width="40" height="40"/>\n  </a>\n`;
+            });
+            markdown += `</p>\n\n`;
+        }
+        if (state.stats.added && state.stats.username) {
+            markdown += `<h3 align="left">Estatísticas do GitHub:</h3>\n<p align="center">\n`;
+            markdown += `  <img src="https://github-readme-stats.vercel.app/api?username=${state.stats.username}&show_icons=true&theme=dracula&include_all_commits=true&count_private=true" alt="Estatísticas do GitHub"/>\n  <br/>\n`;
+            markdown += `  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=${state.stats.username}&layout=compact&langs_count=7&theme=dracula" alt="Linguagens Mais Usadas"/>\n`;
+            markdown += `</p>\n\n`;
+        }
+        return markdown.trim();
+    }
+    
+    function updateOutputs() {
+        const markdown = generateMarkdown();
+        const markdownOutput = document.getElementById('markdown-output');
+        const previewOutput = document.getElementById('preview-output');
+
+        markdownOutput.value = markdown;
+        
+        if (!markdown) {
+            previewOutput.innerHTML = '<p class="text-stone-400 text-center pt-16">A pré-visualização do seu README aparecerá aqui...</p>';
+            return;
+        }
+
+        // Simple Markdown to HTML conversion for preview
+        let html = markdown
+            .replace(/# (.*)/g, '<h1 class="text-2xl font-bold mb-4">$1</h1>')
+            .replace(/- (.*)/g, '<li class="ml-4 list-disc">$1</li>')
+            .replace(/<h3 align="left">(.*)<\/h3>/g, '<h3 class="text-lg font-semibold mt-6 mb-2">$1</h3>')
+            .replace(/<p align="center">([\s\S]*?)<\/p>/g, '<div class="flex justify-center flex-wrap gap-4 my-4">$1</div>')
+            .replace(/<p align="left">([\s\S]*?)<\/p>/g, '<div class="flex flex-wrap gap-4 my-4">$1</div>')
+            .replace(/<img src="([^"]+)" alt="([^"]+)" width="(\d+)"[^>]*>/g, '<img src="$1" alt="$2" style="width:${parseInt($3)/1.5}px; height:auto;" class="max-w-full h-auto my-2">')
+             .replace(/<img src="([^"]+)" alt="([^"]+)"[^>]*>/g, '<img src="$1" alt="$2" class="max-w-full h-auto my-2">')
+            .replace(/<a href="[^"]+"[^>]*>([\s\S]*?)<\/a>/g, '$1')
+            .replace(/\n/g, '<br>');
+            
+        previewOutput.innerHTML = html;
+    }
+
+    function copyMarkdown() {
+        const markdownOutput = document.getElementById('markdown-output');
+        markdownOutput.select();
+        document.execCommand('copy');
+        alert('Código Markdown copiado para a área de transferência!');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        initializeTechIcons();
+    });
+
+</script>
+
+</body>
+</html>
+
