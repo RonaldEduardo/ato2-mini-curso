@@ -1,0 +1,47 @@
+  body {
+      font-family: 'Space Mono', monospace;
+  }
+
+  .content-section {
+      display: none;
+  }
+
+  .content-section.active {
+      display: block;
+  }
+
+  .sidebar-link.active {
+      background-color: #FBBF24;
+      color: #1E293B;
+  }
+
+  .code-block {
+      position: relative;
+  }
+
+  .copy-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background-color: #4B5563;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      font-size: 0.75rem;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.2s;
+  }
+
+  .code-block:hover .copy-btn {
+      opacity: 1;
+  }
+
+  .photo-flow-area {
+      transition: all 0.5s ease-in-out;
+  }
+
+  .file-representation {
+      transition: all 0.5s ease-in-out;
+      transform-origin: center;
+  }
