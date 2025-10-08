@@ -17,56 +17,15 @@ git config --global user.name "Seu Nome Completo"
 # Define o seu email
 git config --global user.email "seuemail@exemplo.com"
 
-2. Iniciando um Projeto
-Como começar um novo projeto ou obter um projeto existente.
 
-git init
-Analogia: Ligar o Capacitor de Fluxo.
-
-O que faz: Inicia um novo repositório Git na pasta atual.
-
-Como funciona: Cria a pasta oculta .git, que é o nosso "álbum de fotos" (repositório local), onde todo o histórico do projeto será armazenado.
-
-git clone
-Analogia: Fazer uma cópia do "álbum de fotos" da galeria principal.
-
-O que faz: Baixa um repositório existente de um servidor remoto (como o GitHub) para a sua máquina.
-
-Como funciona: Cria uma cópia local do projeto, já conectada ao repositório remoto (origin).
-
-Exemplo de Uso:
-
-git clone <URL_DO_REPOSITÓRIO_HTTPS_OU_SSH>
-
-3. O Ciclo de Trabalho Diário (A Fotografia)
-Os comandos que você mais usará no seu dia a dia.
-
-git status
-Analogia: O Painel de Controlo do DeLorean.
-
-O que faz: Mostra o estado atual do seu "estúdio" (Working Directory) e do seu "visor da câmara" (Staging Area).
-
-Como funciona: Informa quais ficheiros foram modificados, quais estão prontos para serem "fotografados" e em qual branch você está. É o seu melhor amigo, use-o a toda a hora!
-
-git add
-Analogia: O Visor da Câmara (Enquadrar a Cena).
-
-O que faz: Adiciona as alterações do "estúdio" para a "área de preparação" (Staging Area).
-
-Como funciona: Seleciona quais mudanças específicas farão parte da sua próxima "foto" (commit). É o passo de composição da cena.
-
-Exemplos de Uso:
 
 # Adiciona um ficheiro específico
 git add nome_do_arquivo.txt
 
-# Adiciona todos os ficheiros modificados e novos na pasta atual
 git add .
 
 git commit
 Analogia: O Clique Final (Tirar a Foto e Escrever a Legenda).
-
-O que faz: Salva um "snapshot" (uma foto) do que está na Staging Area para o histórico do repositório.
 
 Como funciona: Pega em tudo o que foi "enquadrado" com git add e cria um ponto permanente na sua linha do tempo, acompanhado de uma mensagem descritiva.
 
@@ -78,20 +37,13 @@ Dica Pro: Use o padrão Conventional Commits (feat:, fix:, docs:, etc.) para men
 
 4. Navegando no Histórico (O Álbum de Fotos)
 Comandos para visualizar e entender a linha do tempo.
-
 git log
 Analogia: Ver o Álbum de Fotos.
 
 O que faz: Mostra o histórico de commits.
 
-Como funciona: Lista as "fotos" que você tirou, da mais recente para a mais antiga, mostrando o autor, a data e a legenda de cada uma.
-
-Exemplos de Uso (Dicas Pro):
 
 # Mostra o log de forma compacta, numa só linha
-git log --oneline
-
-# Mostra o log com um gráfico das branches
 git log --graph --oneline
 
 # Mostra o que mudou em cada commit (o "patch")
